@@ -1,0 +1,101 @@
+---
+title: "Python Project - TFDS"
+author: "Sofani"
+date: "9/23/2022"
+output: html_document
+---
+
+In this project you will be working with Python.
+
+1. *Knit* the empty file (to make sure everything is working)
+2. Consistently *knit* the file each time you answer a question
+
+⚠️ Students enrolled in CAP4755 should only solve: **1 to 6**
+
+## Python Basics 
+
+1. Compute the difference between 2022 and the year you started programming 
+divide this by the difference between 2022 and the year you were born. 
+Multiply this with 100 to get the percentage of your life you have been programming
+
+```{python}
+#Code here
+
+```
+
+
+
+2. Compute the mean of the square root of a vector of 100 random numbers. What happens?
+
+```{python}
+#Code here
+
+```
+
+
+3. Make a vector from 1 to 100. Make a for-loop which runs through the whole vector. Multiply the elements which are smaller than 11 or larger than 90 with 10 and the other elements with 0.1
+
+```{python}
+#Code here
+
+```
+
+
+4. Write a function for the previous ToDo, so  that you can feed it any vector you like  (as argument). You may use a for-loop in the function to do the computation with each element. 
+
+```{python}
+#Code here
+
+```
+
+
+
+## Data Analysis
+
+5. Pick a data from [this link](https://vincentarelbundock.github.io/Rdatasets/articles/data.html) and Read the data in Python
+
+```{python}
+#Code here
+
+```
+
+
+
+6. Plot histogram of the output/response variable
+
+```{python}
+#Code here
+
+```
+
+
+
+7. Split data to 25% training and 75% testing data sets
+
+```{python}
+#Code here
+
+```
+
+8. fit a linear regression on training data set (see notes from class)
+
+```{python}
+#Code here
+
+```
+
+
+9. Predict using the fit and testing data set
+```{python}
+#Code here
+
+```
+
+10. Calculate MAPE
+
+```{python}
+#Code here
+
+```
+
+
