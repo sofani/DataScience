@@ -81,7 +81,7 @@
 
 # # Random numbers generation:
 
-# from numpy import random
+from numpy import random
 
 # x = random.randint(100) # a random integer from 0 to 100
 # print(x)

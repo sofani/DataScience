@@ -1,0 +1,183 @@
+---
+title: "Final Project - Tools for Data Science"
+author: "Sofani Mesfun"
+date: "2022"
+output: html_document
+---
+
+In this project you will be working with R, SQL, and Python in the same document. We will use the data sets *airlines* and *flights* from the package *nycflights13*.
+
+1. *Knit* the empty file (to make sure everything is working)
+2. Consistently *knit* the file each time you answer a question
+
+⚠️ Students enrolled in CAP4755 should only solve: **questions 1 and 2**
+
+
+**In R, install the packages ```nycflights13```, ```sqldf```, ```tydiverse``` and load all data sets and packages**.
+Take your time to understand the data sets. 
+```{r, warning=FALSE, message=FALSE}
+#Install code here - comment the code when you finish installation
+#install.packages("nycflights13")
+#install.packages("sqldf")
+#install.packages("tidyverse")
+#install.packages("seaborn")
+#install.packages("dplyr") 
+# Load all packages here
+library(nycflights13)
+library(sqldf)
+library(tidyverse)
+library(ggplot2)
+# Load the data here
+data(nycflights13)
+
+
+```
+
+
+> **Question 1: List the name of airlines where the destination is ATL airport with their *average arrival delays* and sort them from the smallest to largest average arrival delays. Use data frames ```flights``` and ```airlines```.** 
+
+We shall solve this question using R, SQL, and Python.
+
+### R solution
+You can use the R command ```inner_join()``` to join two tables.
+
+```{r, warning=FALSE, message=FALSE}
+# Code here
+ListOfFlightsAirLinesATL<-data.frame(inner_join(flights, airlines, by = 'carrier')
+                           %>% filter(dest=="ATL")
+                           %>% group_by(name)
+                           %>% drop_na()
+                           %>% summarise(Ave=mean(arr_delay))
+                           %>% select(name, Ave)
+                           %>% arrange(desc(-Ave))
+                          
+              )
+ListOfFlightsAirLinesATL
+
+```
+
+
+### SQL solution
+Write your SQL query in the function ```sqldf()```. For exmaple,```sqldf("select * from relig_income")``` list the data frame ```relig_income```.
+```{r, warning=FALSE, message=FALSE }
+# Example
+#sqldf("select * from relig_income limit 3")
+# code here
+df_flightsdata<-data.frame(flights)
+df_airlinesdata <-data.frame(airlines)
+
+sqldf("select  name, avg(arr_delay) as AVE from df_flightsdata 
+       INNER JOIN df_airlinesdata
+       on df_flightsdata.carrier = df_airlinesdata.carrier
+       where dest = 'ATL'
+       group by name
+       order by AVE ASC")
+```
+
+
+### Python solution
+Use [df.join()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html) from pandas.
+
+```{python}
+# load python libraries 
+import pandas as pd
+from nycflights13 import flights
+from nycflights13 import airlines
+
+# load data
+df_airlines = pd.DataFrame(airlines)
+df_flights = pd.DataFrame(flights)
+# code here
+ListOfFlightsAirLinesATLPython = df_flights.merge(df_airlines, how='inner', on='carrier')
+ListOfFlightsAirLinesATLPython.query("dest == 'ATL'", inplace=True )
+ListOfFlightsAirLinesATLPython.groupby(by = ['name'])['arr_delay'].mean().sort_values(ascending=True)
+
+```
+
+
+
+> **Question 2: Plot the boxplot of the departure delays vs the name of airlines where the destination is ATL airport. Solve this question using R and Python.**
+
+
+### R solution
+Use ggplot
+```{r, warning=FALSE, message=FALSE}
+library(dplyr, warn.conflicts = FALSE)
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+# code here
+departuredelayNameofAirlineATL<-data.frame(inner_join(flights, airlines, by = 'carrier')
+                           %>% filter(dest=="ATL")
+                           %>% group_by(name)
+                           %>% drop_na()
+                           %>% summarise(dep_delay)
+              )
+ggplot(departuredelayNameofAirlineATL, aes(x = name, y = dep_delay,  fill = name)) + geom_boxplot() +
+   stat_summary(fun = "mean", geom = "point", shape = 8,
+               size = 2, color = "white")
+
+
+```
+
+
+### Python solution
+You can use [pandas.boxplot()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.boxplot.html) or [seaborn.boxplot()](https://seaborn.pydata.org/generated/seaborn.boxplot.html). You can either import data from the R package into Python or use the data Python package [nycflights13](https://pypi.org/project/nycflights13/) 
+
+```{python}
+# import python libraries
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+# data
+df_airlines = pd.DataFrame(airlines)
+df_flights = pd.DataFrame(flights)
+departuredelayNameofAirlineATLPython= df_flights.merge(df_airlines, how='inner', on='carrier')
+departuredelayNameofAirlineATLPython.query("dest == 'ATL'", inplace=True )
+departuredelayNameofAirlineATLPython.groupby('name')[('dep_delay')].aggregate('min')
+# Boxplot
+# code here
+sns.boxplot(
+    data=departuredelayNameofAirlineATLPython, y="name", x="dep_delay",
+     notch=True, showcaps=False,
+    flierprops={"marker": "x"},
+    boxprops={"facecolor": (.4, .6, .8, .5)},
+    medianprops={"color": "coral"},
+  )
+plt.show()
+
+
+```
+
+> **Question 3: For each airlines, 1) find the month where the average departure time is the highest in the year. 2) Make a visualization to show the results. Solve this question using your preferred language R or Python.**
+
+
+```{R} 
+# Do not foget to specify which language are you using.
+
+# load libraries 
+library(nycflights13)
+library(tidyverse)
+library(dplyr, warn.conflicts = FALSE)
+
+
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+# load data
+data(nycflights13)
+# code here to find the months
+
+Averagedeparturetime <- merge(airlines, flights, by ="carrier")
+Averagedeparturetime %>%
+  group_by(name, month) %>%
+  drop_na()  %>%
+  summarise(mean_dt= mean(dep_time)) %>%
+  arrange(desc(mean_dt))%>%
+  slice_max(mean_dt)
+# code here to make the visualization
+
+ggplot(Averagedeparturetime, aes(x = factor(month), y = dep_time,  fill = month)) + geom_boxplot() +
+   stat_summary(fun = "mean", geom = "point", shape = 8,
+               size = 2, color = "white")
+
+```
+

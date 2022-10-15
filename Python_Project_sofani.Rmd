@@ -1,6 +1,6 @@
 ---
 title: "Python Project - TFDS"
-author: "Sofani"
+author: "Sofani Mesfun"
 date: "9/23/2022"
 output: html_document
 ---
@@ -19,6 +19,7 @@ divide this by the difference between 2022 and the year you were born.
 Multiply this with 100 to get the percentage of your life you have been programming
 
 ```{python}
+#Code here
 from datetime import date
 #Code here
 yearStartedProg = 2017
@@ -57,26 +58,30 @@ for k in range(1,100):
     print(k * 10);
   else:
      print(round((k * 0.1), 2));
-    
+```
 
+
+4. Write a function for the previous ToDo, so  that you can feed it any vector you like  (as argument). You may use a for-loop in the function to do the computation with each element. 
 
 ```{python}
 #Code here
-
+vector01 = [1, 2, 3];
+vector02 = [12, 7, 98];
+vector03 = []
 def myfun(anyVector):
-  if (len(anyVector) != 0) :
-    for k in anyVector: 
+  if ((len(anyVector) != 0)):
+    for k in anyVector:
       if (k < 11) or (k > 90):
         print(k * 10);
-    else:
-       print(round((k * 0.1), 2));
- numbers = [4,5,9,6,4,12]
- 
- myfun(numbers) 
- 
-```
+      else:
+        print(round((k * 0.1), 2));
+  else:
+    print ("length is zero");
+myfun(vector01)
+myfun(vector02)
+myfun(vector03)
 
-4. Write a function for the previous ToDo, so  that you can feed it any vector you like  (as argument). You may use a for-loop in the function to do the computation with each element. 
+```
 
 
 ## Data Analysis
@@ -85,7 +90,9 @@ def myfun(anyVector):
 
 ```{python}
 #Code here
-
+import pandas as pd
+ChinaIncome = pd.read_csv("ChinaIncome.csv")
+ChinaIncome
 ```
 
 
@@ -94,6 +101,23 @@ def myfun(anyVector):
 
 ```{python}
 #Code here
+import matplotlib.pyplot as plt
+import pandas as pd
+df_ChinaIncome = pd.DataFrame(ChinaIncome)
+Agriculture = df_ChinaIncome["agriculture"]
+Commerce = df_ChinaIncome["commerce"] 
+bins =[80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 250, 300,350, 400, 450,500, 550, 600, 700]
+
+plt.style.use("fivethirtyeight")
+plt.figure();
+plt.title("China Income")
+plt.xlabel("Sectors")
+plt.ylabel("Income")
+plt.tight_layout()
+plt.hist([Agriculture, Commerce], bins =bins, edgecolor="black", rwidth=0.9,color=['red', 'blue'], label=['Agriculture', 'Commerce'])
+plt.legend(loc='upper right')
+plt.show()
+plt.close()
 
 ```
 
@@ -103,6 +127,16 @@ def myfun(anyVector):
 
 ```{python}
 #Code here
+from sklearn import linear_model
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_percentage_error
+
+#Splitting affairs data into 75% and 25% 
+training_data, testing_data = train_test_split(df_ChinaIncome, test_size=0.75, random_state=20)
+#75 % testing data 
+testing_data
+#25% Training data
+training_data
 
 ```
 
@@ -110,21 +144,30 @@ def myfun(anyVector):
 
 ```{python}
 #Code here
+from sklearn import linear_model
 
+# Create X and Y from training
+Y = training_data["agriculture"] # response variable / outcome
+X = training_data.drop(columns=["agriculture"]) #predictors / features
+
+reg =  linear_model.LinearRegression().fit(X,Y)
 ```
 
 
 9. Predict using the fit and testing data set
 ```{python}
 #Code here
-
+Y_test = testing_data["agriculture"]
+X_test = testing_data.drop(columns=["agriculture"])
+agriculture_y_pred = reg.predict(X_test) 
+print(reg.coef_)
 ```
 
 10. Calculate MAPE
 
 ```{python}
 #Code here
-
+mean_absolute_percentage_error(y_true=Y_test, y_pred=agriculture_y_pred)
 ```
 
 
